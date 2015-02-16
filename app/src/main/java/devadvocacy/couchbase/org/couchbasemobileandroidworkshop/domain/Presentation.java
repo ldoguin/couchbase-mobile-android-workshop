@@ -1,5 +1,9 @@
 package devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain;
 
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.Document;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,17 +15,56 @@ import java.util.Map;
  */
 public class Presentation {
 
-    public static final String type = "presentation";
-    private String id;
+    public static final String TYPE = "presentation";
+    private Database database;
+    private Document sourceDocument;
     private String title;
+    private String id;
     private String presentationAbstract;
     private Date createdAt;
 
-    public Presentation(String id, String title, String presentationAbstract) {
-        this.id = id;
-        this.title = title;
-        this.presentationAbstract = presentationAbstract;
+
+    public Presentation(Database database) {
+        this.database = database;
         this.createdAt = new Date();
+        this.title = "defaultTitle";
+        this.presentationAbstract = "defaultPresentationAbstract";
+    }
+
+    public static void createPresentation(Database database, String title, String presentationAbstract) throws CouchbaseLiteException {
+        Document doc = database.createDocument();
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("title", title);
+        properties.put("channels", "all");
+        properties.put("type", TYPE);
+        properties.put("presentationAbstract", presentationAbstract);
+        properties.put("created_at", new Date());
+        doc.putProperties(properties);
+    }
+
+    public static Presentation from(Document document) {
+        Presentation presentation = new Presentation(document.getDatabase());
+        if (document.getProperty("title") != null) {
+            presentation.setTitle((String) document.getProperty("title"));
+        }
+        if (document.getProperty("presentationAbstract") != null) {
+            presentation.setPresentationAbstract((String) document.getProperty("presentationAbstract"));
+        }
+        if (document.getProperty("created_at") != null) {
+            long createdAtL = 0;
+            Object createdAt = document.getProperty("created_at");
+            if (createdAt instanceof Double) {
+                createdAtL = ((Double) createdAt).longValue();
+            }
+            if (createdAt instanceof Long) {
+                createdAtL = (Long) createdAt;
+            }
+
+
+            presentation.setCreatedAt(new Date(createdAtL));
+        }
+        presentation.setSourceDocument(document);
+        return presentation;
     }
 
     @Override
@@ -30,15 +73,7 @@ public class Presentation {
     }
 
     public static String getType() {
-        return type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        return TYPE;
     }
 
     public String getTitle() {
@@ -63,5 +98,21 @@ public class Presentation {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Document getSourceDocument() {
+        return sourceDocument;
+    }
+
+    public void setSourceDocument(Document sourceDocument) {
+        this.sourceDocument = sourceDocument;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

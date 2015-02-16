@@ -21,9 +21,9 @@ public class PresentationContent {
 
     static {
         // Add 3 sample items.
-        addItem(new Presentation("1", "Item 1", "abstract 1"));
-        addItem(new Presentation("2", "Item 2", "abstract 2"));
-        addItem(new Presentation("3", "Item 3", "abstract 3"));
+        addItem(new Presentation(null));
+        addItem(new Presentation(null));
+        addItem(new Presentation(null));
     }
 
     private static void addItem(Presentation presentation) {

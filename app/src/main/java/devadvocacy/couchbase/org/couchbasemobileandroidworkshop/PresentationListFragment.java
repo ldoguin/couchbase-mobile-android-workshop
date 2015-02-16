@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-
 import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.Presentation;
 import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.PresentationContent;
 
