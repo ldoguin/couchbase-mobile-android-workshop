@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.dummy.DummyContent;
+import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.Presentation;
+import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.PresentationContent;
 
 /**
  * A fragment representing a single Presentation detail screen.
@@ -26,7 +27,7 @@ public class PresentationDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private Presentation mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -43,7 +44,7 @@ public class PresentationDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = PresentationContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         }
     }
 
@@ -54,7 +55,7 @@ public class PresentationDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.presentation_detail)).setText(mItem.content);
+            ((TextView) rootView.findViewById(R.id.presentation_detail)).setText(mItem.getTitle());
         }
 
         return rootView;

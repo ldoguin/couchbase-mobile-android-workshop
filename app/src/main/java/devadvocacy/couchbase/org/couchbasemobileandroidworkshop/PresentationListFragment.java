@@ -8,7 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
-import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.dummy.DummyContent;
+import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.Presentation;
+import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.PresentationContent;
 
 /**
  * A list fragment representing a list of Presentations. This fragment
@@ -72,11 +73,11 @@ public class PresentationListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
+        setListAdapter(new ArrayAdapter<Presentation>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                DummyContent.ITEMS));
+                PresentationContent.ITEMS));
     }
 
     @Override
@@ -116,7 +117,7 @@ public class PresentationListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+        mCallbacks.onItemSelected(PresentationContent.ITEMS.get(position).getId());
     }
 
     @Override
