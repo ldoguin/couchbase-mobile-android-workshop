@@ -26,7 +26,7 @@ public class PresentationAdapter extends LiveQueryAdapter {
         // Load the View if not done so already from the view_presentation.xml
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(android.R.layout.simple_list_item_activated_1, null);
+            convertView = inflater.inflate(android.R.layout.simple_list_item_activated_2 , null);
         }
 
         // Get the document currently to be displayed
@@ -42,6 +42,9 @@ public class PresentationAdapter extends LiveQueryAdapter {
 
         TextView titleView = (TextView) convertView.findViewById(android.R.id.text1);
         titleView.setText(presentation.getTitle());
+
+        TextView titleView2 = (TextView) convertView.findViewById(android.R.id.text2);
+        titleView2.setText(presentation.getPresentationAbstract());
 
         return convertView;
 

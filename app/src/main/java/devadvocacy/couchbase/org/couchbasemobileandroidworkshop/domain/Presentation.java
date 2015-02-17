@@ -28,7 +28,6 @@ public class Presentation {
     private String presentationAbstract;
     private Date createdAt;
 
-
     public Presentation(Database database) {
         this.database = database;
         this.createdAt = new Date();
