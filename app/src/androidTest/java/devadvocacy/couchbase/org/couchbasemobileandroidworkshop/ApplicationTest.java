@@ -45,21 +45,31 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
     public void testPresentation() throws Exception {
+
         // Start by creating a presentation document
-        Presentation.createPresentation(database,"Doc Title","Abstract");
+        Presentation.createPresentation(database,"Doc1 Title","Abstract");
+        // Create another presentation through the save method
+        Presentation pres2 = new Presentation(database);
+        pres2.setTitle("Doc2 Title");
+        pres2.setPresentationAbstract("presentationAbstract");
+        pres2.save();
         // use a specific database query that returns all the documents
         QueryEnumerator qe = database.createAllDocumentsQuery().run();
         // Make sure we see our previously created document
-        Boolean foundDoc = false;
+        Boolean foundDoc1 = false;
+        Boolean foundDoc2 = false;
         while (qe.hasNext()) {
             QueryRow qr = qe.next();
             Document doc = qr.getDocument();
             Presentation presentation = Presentation.from(doc);
-            if (presentation.getTitle().equals("Doc Title")) {
-                foundDoc = true;
+            if (presentation.getTitle().equals("Doc1 Title")) {
+                foundDoc1 = true;
+            } else if (presentation.getTitle().equals("Doc2 Title")) {
+                foundDoc2 = true;
             }
         }
-        assertTrue(foundDoc);
+        assertTrue(foundDoc1);
+        assertTrue(foundDoc2);
      }
 
     @Override

@@ -3,6 +3,7 @@ package devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
+import com.couchbase.lite.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +66,27 @@ public class Presentation {
         }
         presentation.setSourceDocument(document);
         return presentation;
+    }
+
+    public void save() throws CouchbaseLiteException {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        Document document;
+        if (sourceDocument == null) {
+            document = database.createDocument();
+        } else {
+            document = sourceDocument;
+            properties.putAll(sourceDocument.getProperties());
+        }
+        properties.put("type", TYPE);
+        properties.put("created_at", createdAt.getTime());
+        properties.put("title", title);
+        properties.put("presentationAbstract", presentationAbstract);
+        try {
+            document.putProperties(properties);
+        } catch (CouchbaseLiteException e) {
+            Log.e("PRESENTATION", "Failed to save");
+            throw e;
+        }
     }
 
     @Override
