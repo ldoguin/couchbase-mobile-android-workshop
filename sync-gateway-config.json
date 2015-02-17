@@ -1,0 +1,23 @@
+{
+	"log": ["CRUD", "HTTP+"],
+	"databases": {
+		"db": {
+			"server": "walrus:",
+			"sync": `
+function(doc){
+	channel(doc.channels);
+}`,
+			"users": {
+				"admin": {
+					"admin_channels": ["all"],
+					"admin_roles": ["powerUser"],
+					"password": "foo"
+				},
+				"GUEST": {"disabled": false, "admin_channels": ["*"] }
+			},
+			"roles": {
+				"powerUser": {"admin_channels": ["admChan"]}
+			}
+		}
+	}
+}
