@@ -4,9 +4,12 @@ import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
+import com.couchbase.lite.replicator.Replication;
 import com.couchbase.lite.util.Log;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.Presentation;
 
@@ -17,6 +20,10 @@ public class Application extends android.app.Application {
 
     public static final String TAG = "AndroidWorkshop";
     private static final String DATABASE_NAME = "conference";
+    /* if you use the android emulator, the host IP should be 10.0.2.2 */
+    private static final String SYNC_URL_HTTP = "http://10.0.2.2:4984/db";
+    private Replication pull;
+    private Replication push;
 
     private Manager manager;
     private Database database;
@@ -48,14 +55,28 @@ public class Application extends android.app.Application {
         }
     }
 
+    private void setupSync() throws MalformedURLException {
+        URL url = new URL(SYNC_URL_HTTP);
+
+        pull = database.createPullReplication(url);
+        push = database.createPushReplication(url);
+
+        pull.setContinuous(true);
+        push.setContinuous(true);
+
+        pull.start();
+        push.start();
+    }
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(Application.TAG, "Application State: onCreate()");
         initDatabase();
         try {
-            Presentation.createPresentation(database,"Presentation 1","Abstract Presentation 1");
-        } catch (CouchbaseLiteException e) {
+            setupSync();
+        } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
