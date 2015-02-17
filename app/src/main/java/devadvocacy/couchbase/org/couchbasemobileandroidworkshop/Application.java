@@ -8,6 +8,8 @@ import com.couchbase.lite.util.Log;
 
 import java.io.IOException;
 
+import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.Presentation;
+
 /**
  * Created by ldoguin on 16/02/15.
  */
@@ -38,13 +40,11 @@ public class Application extends android.app.Application {
             return;
         }
         try {
-            /**
-             * Create Database will return the existing database or create it if it does not exist.
-             */
+            /* Create Database will return the existing database or create it if it does not
+             exist. */
             database = manager.getDatabase(DATABASE_NAME);
         } catch (CouchbaseLiteException e) {
             Log.e(TAG, "Cannot get Database", e);
-            return;
         }
     }
 
@@ -53,6 +53,11 @@ public class Application extends android.app.Application {
         super.onCreate();
         Log.d(Application.TAG, "Application State: onCreate()");
         initDatabase();
+        try {
+            Presentation.createPresentation(database,"Presentation 1","Abstract Presentation 1");
+        } catch (CouchbaseLiteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Database getDatabase() {

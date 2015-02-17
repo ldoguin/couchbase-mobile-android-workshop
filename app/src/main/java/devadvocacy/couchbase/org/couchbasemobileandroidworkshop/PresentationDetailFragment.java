@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.couchbase.lite.Database;
+import com.couchbase.lite.Document;
+
 import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.Presentation;
-import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.PresentationContent;
 
 /**
  * A fragment representing a single Presentation detail screen.
@@ -36,6 +38,11 @@ public class PresentationDetailFragment extends Fragment {
     public PresentationDetailFragment() {
     }
 
+    private Database getDatabase() {
+        Application application = (Application) getActivity().getApplication();
+        return application.getDatabase();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +51,9 @@ public class PresentationDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = PresentationContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+
+            Document doc = getDatabase().getDocument(getArguments().getString(ARG_ITEM_ID));
+            mItem = Presentation.from(doc);
         }
     }
 

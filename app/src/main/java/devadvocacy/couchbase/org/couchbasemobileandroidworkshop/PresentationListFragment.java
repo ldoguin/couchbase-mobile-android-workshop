@@ -7,8 +7,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.couchbase.lite.Database;
+import com.couchbase.lite.Document;
+import com.couchbase.lite.Query;
+import com.couchbase.lite.util.Log;
+
 import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.Presentation;
-import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.PresentationContent;
+import devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain.PresentationAdapter;
 
 /**
  * A list fragment representing a list of Presentations. This fragment
@@ -67,16 +72,18 @@ public class PresentationListFragment extends ListFragment {
     public PresentationListFragment() {
     }
 
+    private Database getDatabase() {
+        Application application = (Application) getActivity().getApplication();
+        return application.getDatabase();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<Presentation>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                PresentationContent.ITEMS));
+        Log.d(Application.TAG, "Starting MainActivity");
+        // Wire up the list view with the message in the Database via the Message Adapter for display
+        Query allPresentationsByDate = Presentation.findAllByDate(getDatabase());
+        setListAdapter(new PresentationAdapter(allPresentationsByDate.toLiveQuery(), getActivity()));
     }
 
     @Override
@@ -116,7 +123,8 @@ public class PresentationListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(PresentationContent.ITEMS.get(position).getId());
+        Document presentation = (Document) listView.getAdapter().getItem(position);
+        mCallbacks.onItemSelected(presentation.getId());
     }
 
     @Override

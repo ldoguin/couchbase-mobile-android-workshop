@@ -3,6 +3,10 @@ package devadvocacy.couchbase.org.couchbasemobileandroidworkshop.domain;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
+import com.couchbase.lite.Emitter;
+import com.couchbase.lite.Mapper;
+import com.couchbase.lite.Query;
+import com.couchbase.lite.View;
 import com.couchbase.lite.util.Log;
 
 import java.util.ArrayList;
@@ -16,11 +20,11 @@ import java.util.Map;
  */
 public class Presentation {
 
+    public static final String VIEW_NAME = "presentation_view";
     public static final String TYPE = "presentation";
     private Database database;
     private Document sourceDocument;
     private String title;
-    private String id;
     private String presentationAbstract;
     private Date createdAt;
 
@@ -30,6 +34,21 @@ public class Presentation {
         this.createdAt = new Date();
         this.title = "defaultTitle";
         this.presentationAbstract = "defaultPresentationAbstract";
+    }
+
+    public static Query findAllByDate(Database database) {
+        View view = database.getView(VIEW_NAME);
+        if (view.getMap() == null) {
+            view.setMap(new Mapper() {
+                @Override
+                public void map(Map<String, Object> document, Emitter emitter) {
+                    if (TYPE.equals(document.get("type"))) {
+                        emitter.emit(document.get("created_at"), document);
+                    }
+                }
+            }, "1");
+        }
+        return view.createQuery();
     }
 
     public static void createPresentation(Database database, String title, String presentationAbstract) throws CouchbaseLiteException {
@@ -130,11 +149,4 @@ public class Presentation {
         this.sourceDocument = sourceDocument;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }
